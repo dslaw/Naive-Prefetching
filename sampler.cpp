@@ -12,14 +12,13 @@
 std::vector<double> read_data(std::string filename);
 
 int main() {
+    const double nu = 0.05;
+    const std::size_t N = 3;
+
     // Read in simulated data.
     std::string path = "R/samples.txt";
     auto xs = read_data(path);
     const double sigma = 3.0; // known parameter
-
-    const double nu = 0.05;
-    const std::size_t n = 3;
-
 
     std::normal_distribution<double> jump_dist(0.0, nu);
     std::uniform_real_distribution<double> runif(0.0, 1.0);
@@ -61,17 +60,18 @@ int main() {
             posterior,
             jump_dist,
             gen,
-            n
+            N
         );
 
         auto nodes = tree.draw(runif, gen);
         auto draws = nodes.first;
         auto densities = nodes.second;
 
-        // Append new draws to chain
+        // Append new draws to chain.
         chain.insert(chain.end(), draws.begin(), draws.end());
         dens.insert(dens.end(), densities.begin(), densities.end());
     }
+
 
     for (auto &draw: chain) {
         std::cout << draw << std::endl;
@@ -98,5 +98,4 @@ std::vector<double> read_data(std::string filename) {
 
     return xs;
 }
-
 

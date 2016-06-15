@@ -15,8 +15,8 @@ PosteriorTree::PosteriorTree(
         std::mt19937 &generator,
         std::size_t n_procs) {
     // Responsible for initializing the tree, which includes:
-    // drawing jump distances and calculating proposals for each node,
-    // setting node children
+    // Drawing jump distances and calculating proposals for each node
+    // Setting node children
 
     // Ensure that each node has a child.
     if ((n_procs - 1) % 2 != 0) {
@@ -35,16 +35,16 @@ PosteriorTree::PosteriorTree(
         epsilons.push_back( jump(generator) );
     }
 
-    // Set up root outside loop for simplicity.
-    auto eps = epsilons.front();
+    // Set up root node outside loop for simplicity.
+    auto eps_init = epsilons.front();
     epsilons.pop_front();
     current_values.push_back(x_t);
-    proposals.push_back(x_t + eps);
+    proposals.push_back(x_t + eps_init);
 
     // Propogate current node value to its left child, and proposal to its right
     // child.
     while (!epsilons.empty()) {
-        eps = epsilons.front();
+        auto eps = epsilons.front();
         epsilons.pop_front();
 
         std::size_t ii = current_values.size();
@@ -53,7 +53,7 @@ PosteriorTree::PosteriorTree(
         // Do floating point division and cast to an int to avoid
         // overflow for 0 / 2.
         float parent = is_right ? (ii - 2) / 2 : (ii - 1) / 2;
-        std::size_t parent_ix = std::size_t(parent);
+        std::size_t parent_ix(parent);
         double current = is_right ? proposals[parent_ix] : current_values[parent_ix];
 
         current_values.push_back(current);
@@ -74,8 +74,8 @@ PosteriorTree::PosteriorTree(
 /// @return vector of thetas, in index order
 std::vector<double> PosteriorTree::get_thetas(void) const {
     std::vector<double> thetas;
-    for (auto it = heap.begin(); it != heap.end(); ++it) {
-        thetas.push_back((*it)->x);
+    for (auto &ele: heap) {
+        thetas.push_back(ele->x);
     }
     return thetas;
 }
@@ -85,8 +85,8 @@ std::vector<double> PosteriorTree::get_thetas(void) const {
 /// @return vector of proposals, in index order
 std::vector<double> PosteriorTree::get_proposals(void) const {
     std::vector<double> proposals;
-    for (auto it = heap.begin(); it != heap.end(); ++it) {
-        proposals.push_back((*it)->proposal);
+    for (auto &ele: heap) {
+        proposals.push_back(ele->proposal);
     }
     return proposals;
 }
