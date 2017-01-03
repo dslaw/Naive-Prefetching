@@ -1,5 +1,5 @@
-#include "include/tree.h"
-#include "include/dist.h"
+#include "dist.h"
+#include "tree.h"
 
 #include <fstream>
 #include <iomanip>

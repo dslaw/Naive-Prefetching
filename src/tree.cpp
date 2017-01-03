@@ -1,4 +1,4 @@
-#include "../include/tree.h"
+#include "tree.h"
 
 
 /// Represents a tree of MCMC proposals.

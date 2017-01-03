@@ -1,4 +1,4 @@
-#include "../include/dist.h"
+#include "dist.h"
 
 
 /// Log normal pdf
