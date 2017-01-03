@@ -2,6 +2,7 @@
 #include "include/dist.h"
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <numeric>
 #include <sstream>
@@ -46,17 +47,15 @@ int main() {
 
     // Initialize the chain.
     const std::size_t n_iter = 10000;
-    std::vector<double> chain, dens;
-
     const double theta_0 = 2.1;
-    chain.push_back(theta_0);
-    dens.push_back( posterior(theta_0) );
 
+    double current(theta_0),
+           density(posterior(theta_0));
 
-    while (chain.size() < n_iter) {
+    for (std::size_t t = 0; t < n_iter; ++t) {
         PosteriorTree tree(
-            chain.back(),
-            dens.back(),
+            current,
+            density,
             posterior,
             jump_dist,
             gen,
@@ -67,16 +66,14 @@ int main() {
         auto draws = nodes.first;
         auto densities = nodes.second;
 
-        // Append new draws to chain.
-        chain.insert(chain.end(), draws.begin(), draws.end());
-        dens.insert(dens.end(), densities.begin(), densities.end());
+        // Advance chain and write new draws to stdout.
+        current = draws.back();
+        density = densities.back();
+
+        for (auto &draw: draws) {
+            std::cout << std::setprecision(10) << draw << std::endl;
+        }
     }
-
-
-    for (auto &draw: chain) {
-        std::cout << draw << std::endl;
-    }
-
 }
 
 
