@@ -49,10 +49,11 @@ int main() {
     const std::size_t n_iter = 10000;
     const double theta_0 = 2.1;
 
+    std::size_t h = 0;
     double current(theta_0),
            density(posterior(theta_0));
 
-    for (std::size_t t = 0; t < n_iter; ++t) {
+    for (std::size_t t = 0; t < n_iter; t+=h) {
         PosteriorTree tree(
             current,
             density,
@@ -73,6 +74,8 @@ int main() {
         for (auto &draw: draws) {
             std::cout << std::setprecision(10) << draw << std::endl;
         }
+
+        h = draws.size();
     }
 }
 
