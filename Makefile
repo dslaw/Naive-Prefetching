@@ -1,10 +1,13 @@
-CC = g++
+CXX = g++
+CXXFLAGS = -std=c++14 -fsanitize=address -fopenmp
+INCLUDEDIR = include
 SRCDIR = src
-CPPFLAGS = -std=c++14 -fsanitize=address -fopenmp -I./include
 
-sampler :
-	$(CC) $(CPPFLAGS) -o bin/sampler $(SRCDIR)/tree.cpp $(SRCDIR)/dist.cpp sampler.cpp
+.PHONY = clean sampler
+
+
+sampler : $(SRCDIR)/tree.cpp $(SRCDIR)/dist.cpp sampler.cpp
+	$(CXX) $(CXXFLAGS) -I$(INCLUDEDIR) -o bin/$@ $^
 
 clean :
-	\rm bin/*
-
+	rm -f bin/*
